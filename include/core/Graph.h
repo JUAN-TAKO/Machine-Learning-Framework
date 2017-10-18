@@ -14,6 +14,9 @@ public:
             i.var->owner = g;
         }
     }
+    Variable addOP(Variable a, Variable b, unsigned int opCode){
+        
+    }
 private:
     std::vector<Variable> variables;
     std::vector<std::shared_ptr<GraphOperation>> operations;

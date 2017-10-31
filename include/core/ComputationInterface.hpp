@@ -1,0 +1,6 @@
+class ComputationInterface{
+public:
+
+private:
+
+};

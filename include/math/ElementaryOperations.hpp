@@ -2,16 +2,26 @@
 #include "../memory/Tensor.hpp"
 #include <cmath>
 
-Tensor E_Add(Tensor& a, Tensor& b){
-    return a.value() + b.value();
+class Operation{
+public:
+    template<typename... Args>
+    virtual Tensor operator()(Args.. args) = 0;
 }
 
-
-Tensor E_Mult(Tensor& a, Tensor& b){
-    return a.value() * b.value();
+class OP_Add : Operation{
+    Tensor operator()(Tensor& a, Tensor& b){
+        return a.value() + b.value();
+    }
 }
 
+class OP_Mult : Operation{
+    Tensor operator()(Tensor& a, Tensor& b){
+        return a.value() * b.value();
+    }
+}
 
-Tensor E_Exp(Tensor& x){
-    return std::exp(x.value());
+class OP_Exp : Operation{
+    Tensor operator()(Tensor& x){
+        return std::exp(x.value());
+    }
 }

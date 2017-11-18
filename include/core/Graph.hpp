@@ -9,7 +9,6 @@ public:
         auto s = graph;
         graph = std::make_shared(new _Graph());
         return std::make_shared(new Graph(s));
-
     }
     Graph(){
         graph = std::make_shared(new _Graph());
@@ -17,14 +16,7 @@ public:
     Graph(std::shared_ptr<_Graph> g){
         graph = g;
     }
-    /*
-    void mergeWith(std::shared_ptr<Graph> g){
-        for(auto i : operations){
-            auto a = i.getInputs()
-            if(a.size()) a[0]->graph = g->graph;
-        }
-        g->graph->operations.insert(g->graph->operations.end(), graph->operations.begin(), graph->operations.end()); //add all ops to the new graph
-    }*/
+
     template<typename Args>
     Variable addOP(Args.. args, unsigned int opCode){
         std::vector<Variable> v = {args};
@@ -51,23 +43,12 @@ private:
     std::map<Variable, std::shared_ptr<GraphOperation>> bOp;
 }
 
-
-/*
-class Node{
-public:
-    
-private:
-    GraphOperation* go;
-    bool isInput;
-    unsigned int index;
-    Variable var;
-};*/
 class GraphOperation{
 public:
-    std::vector<Variable>& getInputs(){
+    std::vector<Variable> getInputs(){
         return in;
     }
-    std::vector<Variable>& getOutputs(){
+    std::vector<Variable> getOutputs(){
         return out;
     }
 

@@ -1,9 +1,9 @@
 #pragma once
 #include "Tensor.hpp"
-#include "../core/Graph.hpp"
+#include "Graph.hpp"
 #include <vector>
 #include <memory>
-#include "../math/ElementaryOperations.hpp"
+#include "Operations.hpp"
 /*
     class : Variable
 
@@ -41,16 +41,15 @@ public:
     }
 
     static Variable operator+(Variable& a, Variable& b){
-        return ara::add(a, b); //E_Add(a.data, b.data);
-                                // std::shared_ptr<Graph> g = findOwner(a,b);
-                                //return g.addOP(a, b, ARA_OP_ADD);
+        return ara::add(a, b); 
+        //std::shared_ptr<Graph> g = findOwner(a,b);
+        //return g.addOP(OP_Add(a, b));
     }
     
     static Variable operator*(Variable& a, Variable& b){
         return ara::multiply(a, b);
-                                //E_Mult(a.data, b.data);
-                                //std::shared_ptr<Graph> g = findOwner(a,b);
-                                //auto r = g.addOP(a, b, ARA_OP_MUL);
+        //std::shared_ptr<Graph> g = findOwner(a,b)
+        //return g.addOP(OP_Mult(a, b));
     }
 
     Variable& operator=(Variable& v){
@@ -84,17 +83,13 @@ private:
         data = std::make_shared(new Tensor());
         gradient = std::make_shared(new Tensor());
         owner = std::make_shared(new Graph());
-        gOp = nullptr;
     }
     _Variable(std::shared_ptr<Graph> o){
         data = std::make_shared(new Tensor());
         gradient = std::make_shared(new Tensor());
         owner = o;
-        gOp = nullptr;
     }
     std::shared_ptr<Tensor> data;
     std::shared_ptr<Tensor> gradient;
     std::shared_ptr<Graph> owner;
-    GraphOperation* gOp;
-    unsigned int opIndex;
 }

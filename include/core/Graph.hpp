@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
-#include "../memory/Variable.hpp"
-#include "../math/ElementaryOperations.hpp"
+#include "Variable.hpp"
+#include "Operations.hpp"
 
 class Graph{
 public:
@@ -18,16 +18,16 @@ public:
     }
 
     template<typename Args>
-    Variable addOP(Args.. args, unsigned int opCode){
+    Variable addOP(Operation op, Args... args){
         std::vector<Variable> v = {args};
-        GraphOperation go(v, opCode);
-        auto opPtr = std::make_shared(go);
+        auto opPtr = op(v);
+
         graph->operations.push_back(opPtr);
         for(auto&& i : v){
-            graph->fOp.insert(i, opPtr);
+            graph->fOp.insert(i, opPtr.get());
         }
         for(auto&& i : opPtr->getOutputs()){
-            graph->bOp.insert(i, opPtr)
+            graph->bOp.insert(i, opPtr.get())
         }
     }
 private:
@@ -38,25 +38,11 @@ class _Graph{
 friend class Graph;
 private:
 
-    std::vector<std::shared_ptr<GraphOperation>> operations;
-    std::map<Variable, std::shared_ptr<GraphOperation>> fOp;
-    std::map<Variable, std::shared_ptr<GraphOperation>> bOp;
+    std::vector<std::unique_ptr<Operation>> operations;
+    std::map<Variable, Operation*> fOp;
+    std::map<Variable, Operation*> bOp;
 }
 
-class GraphOperation{
-public:
-    std::vector<Variable> getInputs(){
-        return in;
-    }
-    std::vector<Variable> getOutputs(){
-        return out;
-    }
-
-private:
-    std::vector<Variable> in;
-    std::vector<Variable> out;
-    unsigned int opCode;
-}
 class Module{
 public:
     virtual Variable forward() = 0;

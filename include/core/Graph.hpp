@@ -5,22 +5,14 @@
 
 class Graph{
 public:
-    std::shared_ptr<Graph> clear(){ //reset the graph and returns the old one
-        auto s = graph;
-        graph = std::make_shared(new _Graph());
-        return std::make_shared(new Graph(s));
-    }
     Graph(){
         graph = std::make_shared(new _Graph());
-    }
-    Graph(std::shared_ptr<_Graph> g){
-        graph = g;
     }
 
     template<typename Args>
     Variable addOP(Operation op, Args... args){
         std::vector<Variable> v = {args};
-        auto opPtr = op(v);
+        auto opPtr = op.clone();
 
         graph->operations.push_back(opPtr);
         for(auto&& i : v){
@@ -31,6 +23,10 @@ public:
         }
     }
 private:
+    Graph(std::shared_ptr<_Graph> g){
+        graph = g;
+    }
+    
     std::shared_ptr<_Graph> graph;
 
 };
@@ -43,21 +39,18 @@ private:
     std::map<Variable, Operation*> bOp;
 }
 
-class Module{
+class Module : public Operation{
 public:
     virtual Variable forward() = 0;
     template<typename... Args>
     virtual Variable operator()(Args... args){
-        inputs = args;
+        inputs = {args};
         return forward(args);
     }
     virtual void backward(Variable pb_for){
         
     }
     
-    //Variable output
 private:
-    std::vector<Variable> inputs;
-    std::vector<Variable> outputs;
     std::shared_ptr<Graph> graph;
 }

@@ -11,10 +11,11 @@
 class Variable{
 friend class Graph;
 public:
-    Variable(){ //this constructor should only be called by the user
-        isRef = true;
+    Variable(){
+        isRef = false;
         sharedPtr = std::make_shared(new _Variable());
     }
+    //copy. if getRef == true, the Variable created will not have any ownership of the graph
     Variable(Variable& v, bool getRef = false){
         if(getRef){
             isRef = false;
@@ -52,14 +53,20 @@ public:
         //return g.addOP(OP_Mult(a, b));
     }
 
+    //should not be used by the library !
+    //use set instead
     Variable& operator=(Variable& v){
-        isRef = true;
+        isRef = false;
         if(v.isRef)
             sharedPtr = v.sharedPtr;
         else
             sharedPtr = v.weakPtr;
         
         return *this;
+    }
+
+    Variable& operator=(Tensor& t){
+
     }
     bool operator==(Variable& var1, Variable& var2){
         return var1.var==var2.var;
@@ -68,8 +75,17 @@ public:
         return Variable(*this, true);
     }
 private:
-    Variable(std::shared_ptr<Graph> o){  //this constructor will be used by the library internally
-        isRef = false;
+    Variable& set(Variable& v){
+        isRef = true;
+        if(v.isRef)
+            weakPtr = v.sharedPtr;
+        else
+            weakPtr = v.weakPtr;
+        
+        return *this;
+    }
+    Variable(std::shared_ptr<Graph> o){
+        isRef = true;
         weakPtr = std::make_shared(_Variable(o));
     }
     bool isRef;

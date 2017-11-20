@@ -4,9 +4,8 @@
 
 class Operation{
 public:
-    Operation(std::vector<Variable> in) : inputs(in) {}
 
-    virtual std::unique_ptr<Operation> operator()(std::vector<Variable> in) = 0;
+    virtual std::unique_ptr<Operation> clone() = 0;
     virtual std::vector<Variable> operator()() = 0;
 
     std::vector<Variable> getOutputs(){
@@ -23,27 +22,43 @@ private:
 
 class OP_Add : public Operation{
 public:
-    using Operation::Operation;
+   OP_Add(std::vector<Variable> in) : inputs(in), outputs(1){}
 
     std::vector<Variable> operator()(){
         outputs[0] = inputs[0].value() + inputs[1].value();
         return outputs;
     }
+
+    std::unique_ptr<Operation> clone(){
+        return std::make_unique(new OP_Add(inputs));
+    }
+
 }
 
 class OP_Mult : public Operation{
+public:
+   OP_Mult(std::vector<Variable> in) : inputs(in), outputs(1){}
+
     std::vector<Variable> operator()(){
-        outputs[0] = inputs[0].value() + inputs[1].value();
+        outputs[0] = inputs[0].value() * inputs[1].value();
         return outputs;
     }
-    std::unique_ptr<Operation> operator()(std::vector<Variable> in){
-        outputs = std::vector<Variable>(1);
-        return std::make_unique<Operation>(new OP_Add(in));
+
+    std::unique_ptr<Operation> clone(){
+        return std::make_unique(new OP_Mult(inputs));
     }
 }
 
 class OP_Exp : public Operation{
-    Tensor operator()(Tensor& x){
-        return std::exp(x.value());
+public:
+   OP_Exp(std::vector<Variable> in) : inputs(in), outputs(1){}
+
+    std::vector<Variable> operator()(){
+        outputs[0] = inputs[0].value().exp();
+        return outputs;
+    }
+
+    std::unique_ptr<Operation> clone(){
+        return std::make_unique(new OP_Exp(inputs));
     }
 }

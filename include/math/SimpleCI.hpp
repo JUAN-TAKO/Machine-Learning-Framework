@@ -2,20 +2,30 @@
 class SimpleCI : public ComputationInterface{
 public:
     static Tensor& add(Tensor& a, Tensor& b){
-        unsigned int md = std::min(a.getDims(), b.getDims());
-        std::vector<unsigned int> ms(md);
-        for(int i(0); i < md; i++){
-            ms[i] = std::min(a.getSize(i), b.getSize(i));
+        unsigned int s = std::min(a.rawSize(), b.rawSize());
+        unsigned int minDims = std::min(a.getDims(), b.getDims());
+        std::vector<unsigned int> minSizes;
+        for(int i(0); i < minDims; i++){
+            minSizes.push_back(std::min(a.getSize(i), b.getSize(i)));
         }
-        Tensor r(ms);
-        for(int i(0); i < md; i++){
-            for(int j(0); j < ms[i]; j++){
-                r[j]
-            }
+        Tensor o(minSizes);
+        for(int i = 0; i < s; i++){
+            o.at(i) = a.at(i) + b.at(i);
         }
+        return o;
     }
     static Tensor& sub(Tensor& a, Tensor& b){
-
+        unsigned int s = std::min(a.rawSize(), b.rawSize());
+        unsigned int minDims = std::min(a.getDims(), b.getDims());
+        std::vector<unsigned int> minSizes;
+        for(int i(0); i < minDims; i++){
+            minSizes.push_back(std::min(a.getSize(i), b.getSize(i)));
+        }
+        Tensor o(minSizes);
+        for(int i = 0; i < s; i++){
+            o.at(i) = a.at(i) - b.at(i);
+        }
+        return o;
     }
     static Tensor& mult(Tensor& a, Tensor& b){
 
@@ -25,5 +35,7 @@ public:
             i = val;
         }
     }
-    static Tensor& exp(Tensor& a) = 0;
+    static Tensor& exp(Tensor& a){
+        
+    }        
 };

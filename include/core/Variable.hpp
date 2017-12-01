@@ -1,5 +1,5 @@
 #pragma once
-#include "Tensor.hpp"
+#include "../tensor/Tensor.hpp"
 #include "Graph.hpp"
 #include <vector>
 #include <memory>

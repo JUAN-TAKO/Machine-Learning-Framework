@@ -1,4 +1,12 @@
 # About the project
+This is the project I was working on when I was 17 
+  
+Highly ambitious to say the least 
+  
+Didn't last long before I moved on to something else ahah
+  
+# Requirements  
+  
 written in C++  
 must be cross platform (any hardware, any OS)  
 very easy to use  
